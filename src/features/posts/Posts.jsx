@@ -1,5 +1,6 @@
 import PostsList from "./PostsList";
 import "./posts.css";
+import PostAuthor from "./PostAuthor";
 
 function Blog() {
   return (
