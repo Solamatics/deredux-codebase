@@ -1,38 +1,37 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { postsAdded } from "./postsSlice";
+
+import { postAdded } from "./postsSlice";
 import { selectAllUsers } from "../users/usersSlice";
 
 const AddPostForm = () => {
-  const users = useSelector(selectAllUsers);
-
-  const userOptions = users.map((user) => (
-    <option key={user.id} value={user.id}>
-      {user.name}
-    </option>
-  ));
+  const dispatch = useDispatch();
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [userId, setUserId] = useState("");
-  const [selectOptions, setSelectOptions] = useState(userOptions);
 
-  const dispatch = useDispatch();
+  const users = useSelector(selectAllUsers);
 
-  const onTitleChange = (e) => setTitle(e.target.value);
-  const onContentChange = (e) => setContent(e.target.value);
-  const onAuthorChange = (e) => setUserId(e.target.value);
+  const onTitleChanged = (e) => setTitle(e.target.value);
+  const onContentChanged = (e) => setContent(e.target.value);
+  const onAuthorChanged = (e) => setUserId(e.target.value);
 
   const onSavePostClicked = () => {
     if (title && content) {
-      dispatch(postsAdded(title, content, userId));
+      dispatch(postAdded(title, content, userId));
       setTitle("");
       setContent("");
-      setSelectOptions(null);
     }
   };
 
   const canSave = Boolean(title) && Boolean(content) && Boolean(userId);
+
+  const usersOptions = users.map((user) => (
+    <option key={user.id} value={user.id}>
+      {user.name}
+    </option>
+  ));
 
   return (
     <section>
@@ -44,22 +43,20 @@ const AddPostForm = () => {
           id="postTitle"
           name="postTitle"
           value={title}
-          onChange={onTitleChange}
+          onChange={onTitleChanged}
         />
-
         <label htmlFor="postAuthor">Author:</label>
-        <select id="postTitle" value={userId} onChange={onAuthorChange}>
+        <select id="postAuthor" value={userId} onChange={onAuthorChanged}>
           <option value=""></option>
-          {selectOptions}
+          {usersOptions}
         </select>
-
-        <label htmlFor="content">Contents:</label>
+        <label htmlFor="postContent">Content:</label>
         <textarea
-          id="content"
+          id="postContent"
           name="postContent"
           value={content}
-          onChange={onContentChange}
-        ></textarea>
+          onChange={onContentChanged}
+        />
         <button type="button" onClick={onSavePostClicked} disabled={!canSave}>
           Save Post
         </button>
@@ -67,5 +64,4 @@ const AddPostForm = () => {
     </section>
   );
 };
-
 export default AddPostForm;
